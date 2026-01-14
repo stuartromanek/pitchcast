@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="assets/pitchcast-icon.svg" alt="Pitchcast Icon" width="256" height="256">
+</div>
+
 # Pitchcast
 
 A Raycast extension for searching album reviews from Pitchfork.com.
