@@ -1,16 +1,16 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "pitchcast",
-  "title": "pitchcast",
-  "description": "Search reviews from pitchfork.com",
+  "title": "Pitchcast",
+  "description": "Search Pitchfork Reviews",
   "icon": "pitchcast-icon.png",
   "author": "stuartromanek",
   "license": "MIT",
   "commands": [
     {
       "name": "index",
-      "title": "Search Pitchfork reviews",
-      "description": "Search reviews from pitchfork.com",
+      "title": "Pitchcast",
+      "description": "Search Pitchfork Reviews",
       "mode": "view"
     }
   ],
