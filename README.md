@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/pitchcast-icon.svg" alt="Pitchcast Icon" width="256" height="256">
+  <img src="assets/pitchcast-icon.svg" alt="Pitchcast Icon" width="128" height="128">
 </div>
 
 # Pitchcast
