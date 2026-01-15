@@ -87,7 +87,10 @@ function autocompleteScore(query: string, text: string): number {
   return jaccard * 0.7 + posBoost * 0.3;
 }
 
-function combinedAutocompleteScore(query: string, result: Pick<SearchResult, "title" | "artist">): number {
+function combinedAutocompleteScore(
+  query: string,
+  result: Pick<SearchResult, "title" | "artist">,
+): number {
   const score1 = autocompleteScore(query, result.title);
   const score2 = autocompleteScore(query, result.artist);
   return (score1 + score2) / 2;
@@ -104,31 +107,27 @@ async function parseFetchResponse(response: Response): Promise<SearchResult[]> {
     throw new Error(`${response.status}: ${response.statusText}`);
   }
 
-  try {
-    const json = (await response.json()) as PitchforkApiResponse;
-    const query = json.coreDataLayer?.search?.searchTerms || "";
+  const json = (await response.json()) as PitchforkApiResponse;
+  const query = json.coreDataLayer?.search?.searchTerms || "";
 
-    // If query is empty, just whitespace, or is our placeholder, return empty results
-    if (!query || query.trim().length === 0 || query === "placeholder") {
-      return [];
-    }
-
-    const searchItems = json.search?.items || [];
-    const reviewSection = searchItems.find((obj) => obj.contentType === "review");
-    const reviews = reviewSection?.items || [];
-
-    if (reviews.length === 0) {
-      return [];
-    }
-
-    const mappedReviews: SearchResult[] = reviews
-      .map((item) => mapReviewItem(item, query))
-      .sort((a, b) => b.searchScore - a.searchScore);
-
-    return mappedReviews;
-  } catch (error) {
-    throw error;
+  // If query is empty, just whitespace, or is our placeholder, return empty results
+  if (!query || query.trim().length === 0 || query === "placeholder") {
+    return [];
   }
+
+  const searchItems = json.search?.items || [];
+  const reviewSection = searchItems.find((obj) => obj.contentType === "review");
+  const reviews = reviewSection?.items || [];
+
+  if (reviews.length === 0) {
+    return [];
+  }
+
+  const mappedReviews: SearchResult[] = reviews
+    .map((item) => mapReviewItem(item, query))
+    .sort((a, b) => b.searchScore - a.searchScore);
+
+  return mappedReviews;
 }
 
 function mapReviewItem(item: PitchforkReviewItem, query: string): SearchResult {
@@ -146,7 +145,8 @@ function mapReviewItem(item: PitchforkReviewItem, query: string): SearchResult {
 
   const score = item.ratingValue?.score;
 
-  const authorName = item.contributors?.author?.items?.[0]?.name || "Unknown Author";
+  const authorName =
+    item.contributors?.author?.items?.[0]?.name || "Unknown Author";
   const decodedAuthor = decode(authorName);
 
   const genreName = item.rubric?.[0]?.name || "Unknown";
@@ -252,7 +252,10 @@ function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
   const accessories = [
     (searchResult.bnm || searchResult.bnr) && { icon: "bnm.svg" },
     searchResult.score && { text: searchResult.score },
-  ].filter((item): item is { icon: string } | { text: string } => item !== false && item !== "");
+  ].filter(
+    (item): item is { icon: string } | { text: string } =>
+      item !== false && item !== "",
+  );
 
   return (
     <List.Item
@@ -263,8 +266,14 @@ function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
       actions={
         searchResult.url ? (
           <ActionPanel>
-            <Action.OpenInBrowser title="Open in Browser" url={searchResult.url} />
-            <Action.CopyToClipboard title="Copy URL" content={searchResult.url} />
+            <Action.OpenInBrowser
+              title="Open in Browser"
+              url={searchResult.url}
+            />
+            <Action.CopyToClipboard
+              title="Copy URL"
+              content={searchResult.url}
+            />
           </ActionPanel>
         ) : undefined
       }
@@ -279,11 +288,11 @@ function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
             <List.Item.Detail.Metadata>
               {searchResult.bnm && (
                 <List.Item.Detail.Metadata.TagList title="">
-                <List.Item.Detail.Metadata.TagList.Item
-                  text="Best New Music"
-                  color={Color.Red}
-                />
-              </List.Item.Detail.Metadata.TagList>
+                  <List.Item.Detail.Metadata.TagList.Item
+                    text="Best New Music"
+                    color={Color.Red}
+                  />
+                </List.Item.Detail.Metadata.TagList>
               )}
               {searchResult.bnr && (
                 <List.Item.Detail.Metadata.TagList title="">
@@ -293,10 +302,22 @@ function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
                   />
                 </List.Item.Detail.Metadata.TagList>
               )}
-              <List.Item.Detail.Metadata.Label title="Artist" text={searchResult.artist} />
-              <List.Item.Detail.Metadata.Label title="Album" text={searchResult.title} />
-              <List.Item.Detail.Metadata.Label title="Score" text={searchResult.score} />
-              <List.Item.Detail.Metadata.Label title="Genre" text={searchResult.genre} />
+              <List.Item.Detail.Metadata.Label
+                title="Artist"
+                text={searchResult.artist}
+              />
+              <List.Item.Detail.Metadata.Label
+                title="Album"
+                text={searchResult.title}
+              />
+              <List.Item.Detail.Metadata.Label
+                title="Score"
+                text={searchResult.score}
+              />
+              <List.Item.Detail.Metadata.Label
+                title="Genre"
+                text={searchResult.genre}
+              />
               {date && (
                 <List.Item.Detail.Metadata.Label
                   title="Date"
@@ -308,12 +329,18 @@ function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
                 />
               )}
               {searchResult.author && (
-                <List.Item.Detail.Metadata.Label title="Author" text={searchResult.author} />
+                <List.Item.Detail.Metadata.Label
+                  title="Author"
+                  text={searchResult.author}
+                />
               )}
               {searchResult.url && (
                 <>
                   <List.Item.Detail.Metadata.Separator />
-                  <List.Item.Detail.Metadata.Label title="URL" text={searchResult.url} />
+                  <List.Item.Detail.Metadata.Label
+                    title="URL"
+                    text={searchResult.url}
+                  />
                 </>
               )}
             </List.Item.Detail.Metadata>
